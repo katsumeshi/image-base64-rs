@@ -1,0 +1,14 @@
+[package]
+name = "image-base64"
+version = "0.1.0"
+license = "MIT"
+description = "Imaging library written in Rust. Provides basic filters and decoders for the most common image formats."
+authors = ["katsumeshi <katsumeshi@gmail.com>"]
+readme = "README.md"
+repository = "https://github.com/katsumeshi/image-base64-rs.git"
+
+[dependencies]
+image = "*"
+base64 = "*"
+regex = "*"
+rustc-serialize = "*"
