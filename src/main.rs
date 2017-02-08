@@ -17,14 +17,14 @@ mod image_base64 {
 
     pub fn to_base64(path: &str) -> String {
         let mut file = File::open(path).unwrap();
-        let mut v = Vec::new();
-        let _ = file.read_to_end(&mut v);
-        let b64 = v.to_base64(MIME);
-        let hex = v.to_hex();
-        return format!("data:image/{};base64,{}", get_type(&hex), b64);
+        let mut vec = Vec::new();
+        let _ = file.read_to_end(&mut vec);
+        let base64 = vec.to_base64(MIME);
+        let hex = vec.to_hex();
+        return format!("data:image/{};base64,{}", get_file_type(&hex), base64);
     }
 
-    fn get_type(hex: &str) -> &str {
+    fn get_file_type(hex: &str) -> &str {
         if Regex::new(r"^ffd8ffe0").unwrap().is_match(hex) { "jpg" }
         else if Regex::new(r"^89504e47").unwrap().is_match(hex){ "png" }
         else if Regex::new(r"^47494638").unwrap().is_match(hex){ "gif" }
@@ -36,13 +36,15 @@ fn main() {
 
     // ------------------------------------------------------
 
-    let fmt_base64 = image_base64::to_base64("res/test.jpg");
-    let offset = fmt_base64.find(',').unwrap_or(fmt_base64.len())+1;
-    let mut header = fmt_base64;
-    let value: String = header.drain(..offset).collect();
-    // let ggg = fmt_base64.drain(..header).collect();
+    let base64 = image_base64::to_base64("res/test.jpg");
+    let offset = base64.find(',').unwrap_or(base64.len())+1;
+    let mut header = base64; // todo: base64 should be immutable
+    let value:String = header.drain(..offset).collect();
 
+    //  println!("{}", base64);
+    //  println!("--------------------------------------");
      println!("{}", header);
+     println!("--------------------------------------");
      println!("{}", value);
 
     
