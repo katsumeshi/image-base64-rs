@@ -21,10 +21,14 @@ mod image_base64 {
     }
 
     fn get_file_type(hex: &str) -> &str {
-        if Regex::new(r"^ffd8ffe0").unwrap().is_match(hex) { "jpg" }
-        else if Regex::new(r"^89504e47").unwrap().is_match(hex){ "png" }
-        else if Regex::new(r"^47494638").unwrap().is_match(hex){ "gif" }
-        else { panic!("invalid file") }
+        if Regex::new(r"^ffd8ffe0").unwrap().is_match(hex) { 
+            "jpg" 
+        } else if Regex::new(r"^89504e47").unwrap().is_match(hex) {  
+            "png" 
+        } else if Regex::new(r"^47494638").unwrap().is_match(hex) { 
+            "gif"
+        } 
+        panic!("invalid file type")
     }
 
     pub fn from_base64(base64: String) {
