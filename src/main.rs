@@ -22,11 +22,11 @@ mod image_base64 {
 
     fn get_file_type(hex: &str) -> &str {
         if Regex::new(r"^ffd8ffe0").unwrap().is_match(hex) { 
-            "jpg" 
+            return "jpg" 
         } else if Regex::new(r"^89504e47").unwrap().is_match(hex) {  
-            "png" 
+            return "png" 
         } else if Regex::new(r"^47494638").unwrap().is_match(hex) { 
-            "gif"
+            return "gif"
         } 
         panic!("invalid file type")
     }
