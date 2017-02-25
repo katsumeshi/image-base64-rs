@@ -47,46 +47,25 @@ mod test {
 
     #[test]
     fn jpg_to_base64() {
-        // let mut f = File::open("res/jpg_data").unwrap();
+        image_to_base64("jpg");
+    }
+
+    #[test]
+    fn gif_to_base64() {
+        image_to_base64("gif");
+    }
+
+    fn image_to_base64(file_type : &str) {
+        let mut file = match File::open(format!("res/{}_data", file_type)) {
+            Err(why) => panic!("couldn't open {}", why),
+            Ok(file) => file,
+        };
         let mut buffer = String::new();
-    let mut file = match File::open("res/jpg_data") {
-        // The `description` method of `io::Error` returns a string that
-        // describes the error
-        Err(why) => panic!("couldn't open {}", why),
-        Ok(file) => file,
-    };
-
-    // Read the file contents into a string, returns `io::Result<usize>`
-    let mut s = String::new();
-    match file.read_to_string(&mut s) {
-        Err(why) => panic!("couldn't read {}", why),
-        Ok(_) => print!("{} contains:\n", s),
+        match file.read_to_string(&mut buffer) {
+            Err(why) => panic!("couldn't read {}", why),
+            Ok(_) => {},
+        }
+        let base64 = to_base64(&format!("res/nyan.{}", file_type)); 
+        assert_eq!(base64, buffer);
     }
-
-    println!("aaaaaa{}", s);
-        // println!("{:?}", buffer);
-
-        let base64 = to_base64("res/nyan.jpg"); 
-        assert_eq!(base64, s);
-       
-        
-        // let img = from_base64(base64);
-        // let mut file = File::create(&Path::new("output.jpg")).unwrap();
-        // file.write_all(img.as_slice()).unwrap();
-    }
-
-    // #[test]
-    // fn png_to_base64() {
-    //     let base64 = to_base64("res/nyan.png");
-    //     // let img = from_base64(base64);
-    //     // let mut file = File::create(&Path::new("output.jpg")).unwrap();
-    //     // file.write_all(img.as_slice()).unwrap();
-    // }
-    // #[test]
-    // fn gif_to_base64() {
-    //     let base64 = to_base64("res/nyan.gif");
-    //     // let img = from_base64(base64);
-    //     // let mut file = File::create(&Path::new("output.jpg")).unwrap();
-    //     // file.write_all(img.as_slice()).unwrap();
-    // }
 }
