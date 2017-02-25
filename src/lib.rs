@@ -53,6 +53,11 @@ mod test {
     #[test]
     fn gif_to_base64() {
         image_to_base64("gif");
+    }    
+    
+    #[test]
+    fn png_to_base64() {
+        image_to_base64("png");
     }
 
     fn image_to_base64(file_type : &str) {
