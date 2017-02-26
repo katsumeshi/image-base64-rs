@@ -73,4 +73,34 @@ mod test {
         let base64 = to_base64(&format!("res/nyan.{}", file_type)); 
         assert_eq!(base64, buffer);
     }
+
+    #[test]
+    fn base64_to_jpg() {
+        base64_to_image("jpg");
+    }
+
+    #[test]
+    fn base64_to_gif() {
+        base64_to_image("gif");
+    }
+
+    #[test]
+    fn base64_to_png() {
+        base64_to_image("png");
+    }
+
+    fn base64_to_image(file_type : &str) {
+        let mut file = match File::open(format!("res/{}_data", file_type)) {
+            Err(why) => panic!("couldn't open {}", why),
+            Ok(file) => file,
+        };
+        let mut base64 = String::new();
+        match file.read_to_string(&mut base64) {
+            Err(why) => panic!("couldn't read {}", why),
+            Ok(_) => {},
+        }
+        let img = from_base64(base64);
+        let mut file = File::create(&Path::new(&format!("output/test.{}", file_type))).unwrap();
+        file.write_all(img.as_slice()).unwrap();
+    }
 }
