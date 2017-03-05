@@ -3,8 +3,14 @@
 <p align="left">
     <a href="https://crates.io/crates/image-base64">
         <img src="https://img.shields.io/crates/v/image-base64.svg"
-             alt="image-base64">
+             alt="crates">
     </a>
+    <a href="https://travis-ci.org/katsumeshi/image-base64-rs">
+        <img src="https://travis-ci.org/katsumeshi/image-base64-rs.svg?branch=master"
+             alt="travis">
+    </a>
+    
+    
 </p>
 Convert image to base64, and vise versa
 
