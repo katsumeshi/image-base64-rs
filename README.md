@@ -20,7 +20,12 @@ fn main() {
 
 ## Installation
 
-cargo install --git https://github.com/katsumeshi/image-base64-rs.git image-base64-rs
+First, add this to your `Cargo.toml`:
+
+```toml
+[dependencies]
+image-base64 = "0.1"
+```
 
 ## License
 
