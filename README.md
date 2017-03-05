@@ -20,7 +20,7 @@ fn main() {
 
 ## Installation
 
-First, add this to your `Cargo.toml`:
+Add the dependency to your `Cargo.toml`:
 
 ```toml
 [dependencies]
