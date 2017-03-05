@@ -6,19 +6,21 @@ Convert image to base64, and vise versa
 
 ## Code Example
 
-Show what the library does as concisely as possible, developers should be able to figure out **how** your project solves their problem by looking at the code example. Make sure the API you are showing off is obvious, and that your code is short and concise.
+```
+extern crate image_base64;
+
+fn main() {
+  let base64 = "base64 String";
+  let image = image_base64::from_base64(base64);
+  
+  let image_path = "local image file path"
+  let base64 = image_base64::to_base64(image_path); 
+}
+```
 
 ## Installation
 
-Provide code examples and explanations of how to get the project.
-
-## Tests
-
-Describe and show how to run the tests with code examples.
-
-## Contributors
-
-Let people know how they can dive into the project, include important links to things like issue trackers, irc, twitter accounts if applicable.
+cargo install --git https://github.com/katsumeshi/image-base64-rs.git image-base64-rs
 
 ## License
 
