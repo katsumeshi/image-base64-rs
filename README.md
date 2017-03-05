@@ -1,7 +1,11 @@
 #image-base64-rs
 
-## Synopsis
-
+<p align="left">
+    <a href="https://crates.io/crates/image-base64">
+        <img src="https://img.shields.io/crates/v/image-base64.svg"
+             alt="image-base64">
+    </a>
+</p>
 Convert image to base64, and vise versa
 
 ## Code Example
@@ -20,7 +24,12 @@ fn main() {
 
 ## Installation
 
-cargo install --git https://github.com/katsumeshi/image-base64-rs.git image-base64-rs
+Add the dependency to your `Cargo.toml`:
+
+```toml
+[dependencies]
+image-base64 = "0.1"
+```
 
 ## License
 
