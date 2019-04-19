@@ -2,7 +2,7 @@ extern crate rustc_serialize;
 extern crate regex;
 
 use std::fs::File;
-use rustc_serialize::base64::{FromBase64, ToBase64, MIME};
+use rustc_serialize::base64::{ToBase64, MIME};
 use rustc_serialize::hex::{ToHex};
 use regex::Regex;
 use std::io::Read;
@@ -32,5 +32,5 @@ pub fn from_base64(base64: String) -> Vec<u8> {
     let offset = base64.find(',').unwrap_or(base64.len())+1;
     let mut value = base64;
     value.drain(..offset);
-    return value.from_base64().unwrap();
+    return base64::decode(&value).unwrap();
 }

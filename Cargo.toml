@@ -6,6 +6,7 @@ description = "Imaging library written in Rust. Provides basic filters and decod
 authors = ["katsumeshi <katsumeshi@gmail.com>"]
 readme = "README.md"
 repository = "https://github.com/katsumeshi/image-base64-rs.git"
+edition="2018"
 
 [dependencies]
 image = "*"
