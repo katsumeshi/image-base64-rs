@@ -12,6 +12,7 @@ use crypto::md5::Md5;
 use crypto::digest::Digest;
 use std::fs;
 use std::str;
+use std::path::MAIN_SEPARATOR;
 
 static FILE_NAME: &'static str = "nyan";
 
@@ -30,9 +31,25 @@ fn png_to_base64() {
     image_to_base64("png");
 }
 
-fn image_to_base64(file_type : &str) {
-    let mut file = match File::open(format!("res/{}_data", file_type)) {
-        Err(why) => panic!("couldn't open {}", why),
+#[test]
+fn webp_to_base64() {
+    image_to_base64("webp");
+}
+
+#[test]
+fn ico_to_base64() {
+    image_to_base64("ico");
+}
+
+// #[test]
+// fn hdr_to_base64() {
+//     image_to_base64("hdr");
+// }
+
+fn image_to_base64(extension : &str) {
+    let path = format!("res{}{}_data", MAIN_SEPARATOR, extension);
+    let mut file = match File::open(Path::new(&path)) {
+        Err(why) => panic!("couldn't open {}: {}", &path, why),
         Ok(file) => file,
     };
     let mut buffer = String::new();
@@ -40,7 +57,7 @@ fn image_to_base64(file_type : &str) {
         Err(why) => panic!("couldn't read {}", why),
         Ok(_) => {},
     }
-    let base64 = image_base64::to_base64(&format!("res/{}.{}", FILE_NAME, file_type)); 
+    let base64 = image_base64::to_base64(&format!("res{}{}.{}", MAIN_SEPARATOR, FILE_NAME, extension)); 
     assert_eq!(base64, buffer);
 }
 
@@ -62,8 +79,20 @@ fn base64_to_png() {
     validate("png");
 }
 
-fn base64_to_image(file_type : &str) {
-    let mut original = match File::open(format!("res/{}_data", file_type)) {
+#[test]
+fn base64_to_webp() {
+    base64_to_image("webp");
+    validate("webp");
+}
+
+#[test]
+fn base64_to_ico() {
+    base64_to_image("ico");
+    validate("ico");
+}
+
+fn base64_to_image(extension : &str) {
+    let mut original = match File::open(format!("res{}{}_data", MAIN_SEPARATOR, extension)) {
         Err(why) => panic!("couldn't open {}", why),
         Ok(file) => file,
     };
@@ -73,18 +102,18 @@ fn base64_to_image(file_type : &str) {
         Ok(_) => {},
     }
     let img = image_base64::from_base64(base64);
-    let mut output = File::create(&Path::new(&format!("output/{}.{}", FILE_NAME, file_type))).unwrap();
+    let mut output = File::create(&Path::new(&format!("output{}{}.{}", MAIN_SEPARATOR, FILE_NAME, extension))).unwrap();
     output.write_all(img.as_slice()).unwrap();
 }
 
-fn validate(file_type : &str) {
-    assert_eq!(get_file_size("res", file_type), get_file_size("output", file_type));
-    assert_eq!(get_hash("res", file_type), get_hash("output", file_type));
+fn validate(extension : &str) {
+    assert_eq!(get_file_size("res", extension), get_file_size("output", extension));
+    assert_eq!(get_hash("res", extension), get_hash("output", extension));
 }
 
-fn get_hash(dir : &str, file_type : &str) -> String {
+fn get_hash(dir : &str, extension : &str) -> String {
     let mut hasher = Md5::new();
-    let mut file = match File::open(&format!("{}/{}.{}", dir, FILE_NAME, file_type)) {
+    let mut file = match File::open(&format!("{}{}{}.{}", dir, MAIN_SEPARATOR, FILE_NAME, extension)) {
         Err(why) => panic!("couldn't open {}", why),
         Ok(file) => file,
     };
@@ -98,8 +127,8 @@ fn get_hash(dir : &str, file_type : &str) -> String {
     hasher.result_str()
 }
 
-fn get_file_size(dir : &str, file_type : &str) -> u64 {
-    let meta = match fs::metadata(&format!("{}/{}.{}",dir, FILE_NAME, file_type)) {
+fn get_file_size(dir : &str, extension : &str) -> u64 {
+    let meta = match fs::metadata(&format!("{}{}{}.{}",dir, MAIN_SEPARATOR, FILE_NAME, extension)) {
         Err(why) => panic!("couldn't read {}", why),
         Ok(meta) => meta,
     };
