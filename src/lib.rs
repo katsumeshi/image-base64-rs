@@ -7,46 +7,52 @@ use rustc_serialize::hex::ToHex;
 use std::fs::File;
 use std::io::Read;
 use std::string::String;
+use std::option::Option;
 
-pub fn get_file_type(hex: &str) -> &str {
+/// Returns a file's extension based on the its hexidecimal representation.
+/// 
+/// Note: TIF files will be considered as TIFF.
+fn get_file_type(hex: &str) -> Option<&str> {
     if Regex::new(r"^ffd8ffe").unwrap().is_match(hex) {
-        return "jpeg";
-    // } else if Regex::new(r"^49492a00").unwrap().is_match(hex) {
-    //     return "tif";
-    // } else if Regex::new(r"^4d4d002a").unwrap().is_match(hex) {
-    //     return "tiff";
-    // } else if Regex::new("r^424d").unwrap().is_match(hex) {
-    //     return "bmp";
+        return Some("jpeg");
+    } else if 
+        Regex::new(r"^49492a00").unwrap().is_match(hex) || 
+        Regex::new(r"^4d4d002a").unwrap().is_match(hex) {
+        return Some("tiff");
+    } else if Regex::new(r"^424d").unwrap().is_match(hex) {
+        return Some("bmp");
     } else if Regex::new(r"^89504e47").unwrap().is_match(hex) {
-        return "png";
+        return Some("png");
     } else if Regex::new(r"^47494638").unwrap().is_match(hex) {
-        return "gif";
+        return Some("gif");
     } else if Regex::new(r"^00000100").unwrap().is_match(hex) {
-        return "ico";
+        return Some("ico");
     } else if Regex::new(r"^52494646").unwrap().is_match(hex) {
-        return "webp";
+        return Some("webp");
+    } else {
+        None
     }
-    // } else if 
-    //     Regex::new(r"^503120").unwrap().is_match(hex) || 
-    //     Regex::new(r"^5032").unwrap().is_match(hex)  || 
-    //     Regex::new(r"^503320").unwrap().is_match(hex) {
-    //     return "pbm"
-    // }
-    panic!("Invalid file type")
 }
 
-pub fn to_base64(path: &str) -> String {
+/// Converts an image file to a base64 encoded string.
+pub fn to_base64(path: &str) -> Option<String> {
     let mut file = File::open(path).unwrap();
     let mut vec = Vec::new();
     let _ = file.read_to_end(&mut vec);
     return to_base64_from_memory(&vec);
 }
 
-pub fn to_base64_from_memory(vec: &[u8]) -> String {
+/// Converts an image buffer to a base64 encoded string.
+pub fn to_base64_from_memory(vec: &[u8]) -> Option<String> {
     let hex = vec.to_hex();
-    return to_base64_from_memory_with_extension(vec, get_file_type(&hex));
+    if let Some(file_type) = get_file_type(&hex) {
+        Some(to_base64_from_memory_with_extension(vec, file_type))
+    } else {
+        None
+    }
 }
 
+/// Converts an image file to a base64 encoded string with a specified extension.
 pub fn to_base64_with_extension(path: &str, extension: &str) -> String {
     let mut file = File::open(path).unwrap();
     let mut vec = Vec::new();
@@ -54,6 +60,7 @@ pub fn to_base64_with_extension(path: &str, extension: &str) -> String {
     return to_base64_from_memory_with_extension(&vec, extension);
 }
 
+/// Converts an image buffer to a base64 encoded string with a specified extension.
 pub fn to_base64_from_memory_with_extension(vec: &[u8], extension: &str) -> String {
     let base64 = vec.to_base64(MIME);
     return format!(
@@ -63,6 +70,7 @@ pub fn to_base64_from_memory_with_extension(vec: &[u8], extension: &str) -> Stri
     );
 }
 
+/// Converts a base64 encoded string to an image buffer.
 pub fn from_base64(base64: String) -> Vec<u8> {
     let offset = base64.find(',').unwrap_or(base64.len()) + 1;
     let mut value = base64;

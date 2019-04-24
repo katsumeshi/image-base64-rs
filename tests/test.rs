@@ -41,10 +41,15 @@ fn ico_to_base64() {
     image_to_base64("ico");
 }
 
-// #[test]
-// fn hdr_to_base64() {
-//     image_to_base64("hdr");
-// }
+#[test]
+fn tiff_to_base64() {
+    image_to_base64("tiff");
+}
+
+#[test]
+fn bmp_to_base64() {
+    image_to_base64("bmp");
+}
 
 fn image_to_base64(extension : &str) {
     let path = format!("res{}{}_data", MAIN_SEPARATOR, extension);
@@ -57,7 +62,7 @@ fn image_to_base64(extension : &str) {
         Err(why) => panic!("couldn't read {}", why),
         Ok(_) => {},
     }
-    let base64 = image_base64::to_base64(&format!("res{}{}.{}", MAIN_SEPARATOR, FILE_NAME, extension)); 
+    let base64 = image_base64::to_base64(&format!("res{}{}.{}", MAIN_SEPARATOR, FILE_NAME, extension)).unwrap(); 
     assert_eq!(base64, buffer);
 }
 
@@ -89,6 +94,18 @@ fn base64_to_webp() {
 fn base64_to_ico() {
     base64_to_image("ico");
     validate("ico");
+}
+
+#[test]
+fn base64_to_tiff() {
+    base64_to_image("tiff");
+    validate("tiff");
+}
+
+#[test]
+fn base64_to_bmp() {
+    base64_to_image("bmp");
+    validate("bmp");
 }
 
 fn base64_to_image(extension : &str) {
