@@ -16,7 +16,7 @@ Convert image to base64, and vise versa
 
 ## Code Example
 
-```
+```rust
 extern crate image_base64;
 
 fn main() {
