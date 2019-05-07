@@ -1,5 +1,3 @@
-extern crate rustc_serialize;
-extern crate regex;
 extern crate crypto;
 extern crate image_base64;
 
@@ -50,6 +48,13 @@ fn tiff_to_base64() {
 fn bmp_to_base64() {
     image_to_base64("bmp");
 }
+
+// TODO(tak): Add support for exr
+// https://github.com/svartalf/rust-imghdr/pull/2
+// #[test]
+// fn exr_to_base64() {
+//     image_to_base64("exr");
+// }
 
 fn image_to_base64(extension : &str) {
     let path = format!("res{}{}_data", MAIN_SEPARATOR, extension);
@@ -107,6 +112,14 @@ fn base64_to_bmp() {
     base64_to_image("bmp");
     validate("bmp");
 }
+
+// TODO(tak): Add support for exr
+// https://github.com/svartalf/rust-imghdr/pull/2
+// #[test]
+// fn base64_to_exr() {
+//     base64_to_image("exr");
+//     validate("exr");
+// }
 
 fn base64_to_image(extension : &str) {
     let mut original = match File::open(format!("res{}{}_data", MAIN_SEPARATOR, extension)) {
