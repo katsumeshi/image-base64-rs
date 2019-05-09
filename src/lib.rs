@@ -7,14 +7,14 @@ use std::string::String;
 use std::option::Option;
 
 /// Returns a file's extension based on the its hexidecimal representation.
-fn get_file_type(data: Vec<u8>) -> Option<&'static str> {
-   match imghdr::what(data.as_slice()) {
+fn get_file_extension(vec: &[u8]) -> Option<&'static str> {
+   match imghdr::from_bytes(vec) {
         // Gif 87a and 89a Files
         Some(Type::Gif) => return Some("gif"),
         // TIFF files
         Some(Type::Tiff) => return Some("tiff"),
         // Sun Raster files
-        Some(Type::Rast) => return Some("rast"),
+        Some(Type::Rast) => return Some("ras"),
         // X Bitmap files
         Some(Type::Xbm) => return Some("xbm"),
         // JPEG data in JFIF or Exif formats
@@ -26,7 +26,7 @@ fn get_file_type(data: Vec<u8>) -> Option<&'static str> {
         // WebP files
         Some(Type::Webp) => return Some("webp"),
         // OpenEXR files
-        // Some(Type::Exr) => return Some("exr"),
+        Some(Type::Exr) => return Some("exr"),
         // BGP (Better Portable Graphics) files
         Some(Type::Bgp) => return Some("bgp"),
         // PBM (Portable bitmap) files
@@ -37,6 +37,8 @@ fn get_file_type(data: Vec<u8>) -> Option<&'static str> {
         Some(Type::Ppm) => return Some("ppm"),
         // SGI image library files
         Some(Type::Rgb) => return Some("rgb"),
+        // HDR files (RGBE)
+        Some(Type::Rgbe) => return Some("hdr"),
         // FLIF (Free Lossless Image Format) files
         Some(Type::Flif) => return Some("flif"),
         // ICO files
@@ -55,7 +57,7 @@ pub fn to_base64(path: &str) -> Option<String> {
 
 /// Converts an image buffer to a base64 encoded string.
 pub fn to_base64_from_memory(vec: &[u8]) -> Option<String> {
-    if let Some(file_type) = get_file_type(vec.to_vec()) {
+    if let Some(file_type) = get_file_extension(vec) {
         Some(to_base64_from_memory_with_extension(vec, file_type))
     } else {
         None
