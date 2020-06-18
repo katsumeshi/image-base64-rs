@@ -1,5 +1,7 @@
+extern crate reqwest;
 extern crate rustc_serialize;
 
+use reqwest::blocking;
 use rustc_serialize::base64::{FromBase64, ToBase64, MIME};
 use rustc_serialize::hex::ToHex;
 use std::fs::File;
@@ -33,4 +35,17 @@ pub fn from_base64(base64: String) -> Vec<u8> {
     let mut value = base64;
     value.drain(..offset);
     value.from_base64().unwrap()
+}
+
+pub fn from_url(image_url: &str) -> String {
+    let result = reqwest::blocking::get(image_url).unwrap().bytes().unwrap();
+
+    let base64 = result.to_base64(MIME);
+    let hex = result.to_hex();
+
+    format!(
+        "data:image/{};base64,{}",
+        get_file_type(&hex),
+        base64.replace("\r\n", "")
+    )
 }
