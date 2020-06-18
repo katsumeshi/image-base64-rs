@@ -1,5 +1,4 @@
 extern crate rustc_serialize;
-extern crate regex;
 extern crate crypto;
 extern crate image_base64;
 
@@ -112,4 +111,42 @@ fn vector_as_u8_4_array(vector: Vec<u8>) -> [u8;4] {
         *place = *element;
     }
     arr
+}
+
+#[test]
+fn png_url_to_base64() {
+    url_to_base64("png");
+}
+
+#[test]
+fn jpg_url_to_base64() {
+    url_to_base64("jpg");
+}
+
+#[test]
+fn gif_url_to_base64() {
+    url_to_base64("gif");
+}
+
+fn url_to_base64(file_type: &str) {
+    let result = image_base64::from_url(
+        format!(
+            "{}{}",
+            "https://raw.githubusercontent.com/katsumeshi/image-base64-rs/master/res/nyan.",
+            file_type
+        )
+        .as_ref(),
+    );
+
+    let mut file = match File::open(format!("res/{}_data", file_type)) {
+        Err(why) => panic!("couldn't open {}", why),
+        Ok(file) => file,
+    };
+    let mut buffer = String::new();
+    match file.read_to_string(&mut buffer) {
+        Err(why) => panic!("couldn't read {}", why),
+        Ok(_) => {}
+    }
+
+    assert_eq!(result, buffer);
 }
