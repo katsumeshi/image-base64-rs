@@ -1,6 +1,3 @@
-extern crate rustc_serialize;
-extern crate regex;
-extern crate crypto;
 extern crate image_base64;
 
 use std::fs::File;
@@ -8,8 +5,6 @@ use std::io::Read;
 use std::string::String;
 use std::path::Path;
 use std::io::Write;
-use crypto::md5::Md5;
-use crypto::digest::Digest;
 use std::fs;
 use std::str;
 
@@ -40,7 +35,7 @@ fn image_to_base64(file_type : &str) {
         Err(why) => panic!("couldn't read {}", why),
         Ok(_) => {},
     }
-    let base64 = image_base64::to_base64(&format!("res/{}.{}", FILE_NAME, file_type)); 
+    let base64 = image_base64::to_base64(&format!("res/{}.{}", FILE_NAME, file_type), image_base64::FileType::from(file_type)); 
     assert_eq!(base64, buffer);
 }
 
@@ -74,7 +69,7 @@ fn base64_to_image(file_type : &str) {
     }
     let img = image_base64::from_base64(base64);
     let mut output = File::create(&Path::new(&format!("output/{}.{}", FILE_NAME, file_type))).unwrap();
-    output.write_all(img.as_slice()).unwrap();
+    output.write_all(img.unwrap().as_slice()).unwrap();
 }
 
 fn validate(file_type : &str) {
@@ -83,7 +78,6 @@ fn validate(file_type : &str) {
 }
 
 fn get_hash(dir : &str, file_type : &str) -> String {
-    let mut hasher = Md5::new();
     let mut file = match File::open(&format!("{}/{}.{}", dir, FILE_NAME, file_type)) {
         Err(why) => panic!("couldn't open {}", why),
         Ok(file) => file,
@@ -94,8 +88,7 @@ fn get_hash(dir : &str, file_type : &str) -> String {
         Ok(_) => {},
     }
     let file_arr = vector_as_u8_4_array(file_vec);
-    hasher.input(&file_arr);
-    hasher.result_str()
+    format!("{:x}", md5::compute(file_arr))
 }
 
 fn get_file_size(dir : &str, file_type : &str) -> u64 {
